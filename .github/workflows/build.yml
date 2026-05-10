@@ -19,7 +19,7 @@ permissions:
 jobs:
   build_release:
     name: Build Release (${{ matrix.variant }})
-    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]'
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]' && secrets.KEYSTORE != ''
     runs-on: ubuntu-latest
 
     strategy:
@@ -121,6 +121,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Restore Persistent Keystore
+        if: ${{ secrets.DEBUG_KEYSTORE != '' }}
         run: |
           echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
 
