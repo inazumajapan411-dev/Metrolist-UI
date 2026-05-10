@@ -835,6 +835,7 @@
     <string name="daily_discover_based_on">Based on %1$s</string>
     <string name="daily_discover_for_fans_of">For fans of %1$s</string>
     <string name="from_the_community">From the community</string>
+    <string name="show_daily_discover">Show Daily Discover on home</string>
 
     <!-- Logout dialog -->
     <string name="logout_dialog_title">Keep library data?</string>

@@ -87,6 +87,7 @@ import com.metrolist.music.constants.PlayerButtonsStyle
 import com.metrolist.music.constants.PlayerButtonsStyleKey
 import com.metrolist.music.constants.PureBlackMiniPlayerKey
 import com.metrolist.music.constants.RespectAgentPositioningKey
+import com.metrolist.music.constants.ShowDailyDiscoverKey
 import com.metrolist.music.constants.SelectedThemeColorKey
 import com.metrolist.music.constants.ShowCachedPlaylistKey
 import com.metrolist.music.constants.ShowDownloadedPlaylistKey
@@ -239,6 +240,7 @@ fun AppearanceSettings(
         )
     val (respectAgentPositioning, onRespectAgentPositioningChange) = rememberPreference(RespectAgentPositioningKey, defaultValue = true)
     val (experimentalLyrics, onExperimentalLyricsChange) = rememberPreference(ExperimentalLyricsKey, defaultValue = true)
+    val (showDailyDiscover, onShowDailyDiscoverChange) = rememberPreference(ShowDailyDiscoverKey, defaultValue = true)
 
     val (lyricsGlowEffect, onLyricsGlowEffectChange) = rememberPreference(LyricsGlowEffectKey, defaultValue = false)
     val (lyricsAnimationStyle, onLyricsAnimationStyleChange) =
@@ -1631,6 +1633,27 @@ fun AppearanceSettings(
                             )
                         },
                         onClick = { showDefaultChipDialog = true },
+                    ),
+                    Material3SettingsItem(
+                        icon = painterResource(R.drawable.home_outlined),
+                        title = { Text(stringResource(R.string.show_daily_discover)) },
+                        trailingContent = {
+                            Switch(
+                                checked = showDailyDiscover,
+                                onCheckedChange = onShowDailyDiscoverChange,
+                                thumbContent = {
+                                    Icon(
+                                        painter =
+                                            painterResource(
+                                                id = if (showDailyDiscover) R.drawable.check else R.drawable.close,
+                                            ),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(SwitchDefaults.IconSize),
+                                    )
+                                },
+                            )
+                        },
+                        onClick = { onShowDailyDiscoverChange(!showDailyDiscover) },
                     ),
                     Material3SettingsItem(
                         icon = painterResource(R.drawable.swipe),
