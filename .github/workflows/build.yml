@@ -19,7 +19,7 @@ permissions:
 jobs:
   build_release:
     name: Build Release (${{ matrix.variant }})
-    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]' && secrets.KEYSTORE != ''
+    if: github.actor != 'dependabot[bot]' && github.actor != 'renovate[bot]' && vars.ENABLE_RELEASE_BUILD == 'true'
     runs-on: ubuntu-latest
 
     strategy:
@@ -121,9 +121,11 @@ jobs:
         run: chmod +x gradlew
 
       - name: Restore Persistent Keystore
-        if: ${{ secrets.DEBUG_KEYSTORE != '' }}
+        env:
+          DEBUG_KEYSTORE: ${{ secrets.DEBUG_KEYSTORE }}
+        if: env.DEBUG_KEYSTORE != ''
         run: |
-          echo "${{ secrets.DEBUG_KEYSTORE }}" | base64 -d > ./app/persistent-debug.keystore
+          echo "$DEBUG_KEYSTORE" | base64 -d > ./app/persistent-debug.keystore
 
       - name: Build Debug APK and Run Lint
         run: ./gradlew --console=plain assemble${{ matrix.variantName }}Debug :app:lint${{ matrix.variantName }}Debug --warning-mode summary
