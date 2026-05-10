@@ -158,12 +158,12 @@ class MetrolistWidgetManager @Inject constructor(
         views.setTextViewText(R.id.widget_song_title, title)
         views.setTextViewText(R.id.widget_artist_name, artist)
 
-        // Set album art with rounded corners
+        // Set album art with rounded square corners (YTM-style 12dp at ~4x density)
         if (albumArt != null) {
-            val roundedAlbumArt = getRoundedCornerBitmap(albumArt, 48f)
+            val roundedAlbumArt = getRoundedCornerBitmap(albumArt, 12f)
             views.setImageViewBitmap(R.id.widget_album_art, roundedAlbumArt)
         } else {
-            views.setImageViewBitmap(R.id.widget_album_art, getRoundedDefaultIcon(48f))
+            views.setImageViewBitmap(R.id.widget_album_art, getRoundedDefaultIcon(12f))
         }
 
         // Set play/pause icon
@@ -174,17 +174,11 @@ class MetrolistWidgetManager @Inject constructor(
         val likeIcon = if (isLiked) R.drawable.ic_widget_heart_nav else R.drawable.ic_widget_heart_outline_nav
         views.setImageViewResource(R.id.widget_like_button, likeIcon)
 
-        // Set Progress Level
-        if (duration > 0) {
-            val level = ((currentPosition.toDouble() / duration.toDouble()) * 10000).toInt()
-            views.setInt(R.id.widget_progress_fill, "setImageLevel", level)
-        } else {
-            views.setInt(R.id.widget_progress_fill, "setImageLevel", 0)
-        }
-
         // Set click intents
         views.setOnClickPendingIntent(R.id.widget_album_art, getOpenAppIntent())
-        views.setOnClickPendingIntent(R.id.widget_play_pause_container, getPlayPauseIntent())
+        views.setOnClickPendingIntent(R.id.widget_play_pause, getPlayPauseIntent())
+        views.setOnClickPendingIntent(R.id.widget_previous, getPreviousIntent())
+        views.setOnClickPendingIntent(R.id.widget_next, getNextIntent())
         views.setOnClickPendingIntent(R.id.widget_like_button, getLikeIntent())
 
         return views
@@ -398,6 +392,30 @@ class MetrolistWidgetManager @Inject constructor(
         return PendingIntent.getBroadcast(
             context,
             2,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun getPreviousIntent(): PendingIntent {
+        val intent = Intent(context, MusicWidgetReceiver::class.java).apply {
+            action = MusicWidgetReceiver.ACTION_PREVIOUS
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            6,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+    }
+
+    private fun getNextIntent(): PendingIntent {
+        val intent = Intent(context, MusicWidgetReceiver::class.java).apply {
+            action = MusicWidgetReceiver.ACTION_NEXT
+        }
+        return PendingIntent.getBroadcast(
+            context,
+            7,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )

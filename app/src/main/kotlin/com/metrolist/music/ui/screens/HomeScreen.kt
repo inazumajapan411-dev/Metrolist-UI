@@ -1158,14 +1158,24 @@ fun HomeScreen(
                 state = lazylistState,
                 contentPadding = LocalPlayerAwareWindowInsets.current.asPaddingValues(),
             ) {
-                item {
-                    ChipsRow(
-                        chips = homePage?.chips?.map { it to it.title } ?: emptyList(),
-                        currentValue = selectedChip,
-                        onValueUpdate = {
-                            viewModel.toggleChip(it)
-                        },
-                    )
+                stickyHeader(key = "home_chips") {
+                    val chipsList = homePage?.chips?.map { it to it.title } ?: emptyList()
+                    if (chipsList.isNotEmpty()) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background)
+                                .padding(vertical = 4.dp),
+                        ) {
+                            ChipsRow(
+                                chips = chipsList,
+                                currentValue = selectedChip,
+                                onValueUpdate = {
+                                    viewModel.toggleChip(it)
+                                },
+                            )
+                        }
+                    }
                 }
 
                 if (isLoading && homePage?.chips.isNullOrEmpty()) {
